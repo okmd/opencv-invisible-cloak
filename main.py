@@ -32,23 +32,24 @@ class Mask:
 class Cloak:
     config = {
         'red':  {
-            "lower":{'begin':(0,50,0), 'end':(10,255,255)},
-            "upper":{'begin':(170,180,0), 'end':(180,255,255)}
+            "lower":{'begin':(0,80,80), 'end':(10,255,255)},
+            "upper":{'begin':(170,80,80), 'end':(180,255,255)}
         }, 
     }
 
     def __init__(self, background, frame):
         self.background = background
-        self.frame = np.flip(frame, axis=1) # to display same image
+        self.frame = frame
 
     def hide(self, debug=False):
         m1 = Mask(self.frame, self.config['red']['lower']).create()
         m2 = Mask(self.frame, self.config['red']['upper']).create()
         self.mask = m1.add(m2)
-        self.mask_inv = self.bit_not()
 
-        morph = self.morph_ex()
-        dialate = self.dilate()
+        self.morph_ex()
+        self.dilate()
+        self.erode()
+        self.mask_inv = self.bit_not()
         
         frame = self.frame_roi()
         background = self.backgorund_roi()
@@ -67,10 +68,13 @@ class Cloak:
         return cv2.bitwise_not(self.mask)
 
     def morph_ex(self, method=cv2.MORPH_OPEN):
-        return cv2.morphologyEx(self.mask, method, np.ones((3,3),np.uint8))
+        self.mask = cv2.morphologyEx(self.mask, method, np.ones((3,3),np.uint8))
     
+    def erode(self):
+        self.mask = cv2.erode(self.mask, np.ones((3,3), np.uint8))
+
     def dilate(self):
-        return cv2.dilate(self.mask, np.ones((3,3), np.uint8))
+        self.mask = cv2.dilate(self.mask, np.ones((3,3), np.uint8))
 
     def cloak_3d(self, mask, debug=False):
         # takes 2d mask and convert to 3d channel mask
@@ -88,13 +92,13 @@ if __name__ == "__main__":
     wait = 50 # inerations
     while wait:
         time.sleep(.1)
-        background = np.flip(cap.frame, axis=1)
+        background = cap.frame #np.flip(, axis=1)
         disp.frame = background
         wait -= 1
 
     # show after hiding the cloak
     while disp.showing and cap.capturing:
-        disp.frame = Cloak(background, cap.frame).hide(debug=False)
+        disp.frame =cap.frame  #Cloak(background, cap.frame).hide(debug=False)
 
     cap.stop()
     disp.stop()

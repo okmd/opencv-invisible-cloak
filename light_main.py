@@ -10,9 +10,9 @@ def mask_3d(mask, shape):
 def mycloak(background, image, debug=False):
     # use HSV color space instead of RGB
     image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    image_mask_lower_color = cv2.inRange(image_hsv,(0,150,0),(10,255,255)) # 2d numpy array binary array[0-255] [balck-white]
+    image_mask_lower_color = cv2.inRange(image_hsv,(0,80,80),(10,255,255)) # 2d numpy array binary array[0-255] [balck-white]
     # if image of color is in this range then 255 otherwise 0
-    image_mask_upper_color = cv2.inRange(image_hsv,(170,80,0),(180,255,255))
+    image_mask_upper_color = cv2.inRange(image_hsv,(170,80,80),(180,255,255))
     mask_full = image_mask_lower_color + image_mask_upper_color
     mask_full = cv2.morphologyEx(mask_full, cv2.MORPH_OPEN, np.ones((3,3),np.uint8))
     # mask_full = cv2.morphologyEx(mask_full, cv2.MORPH_CLOSE, np.ones((3,3),np.uint8))
@@ -47,7 +47,7 @@ while count:
         print("Unable to read background.")
         break
 # cv2.imshow("bg", background)
-background = np.ones(background.shape,np.uint8)*255
+# background = np.ones(background.shape,np.uint8)*255
 ## Runing the Live stream ##
 while 1:
     status, frame = capture.read()

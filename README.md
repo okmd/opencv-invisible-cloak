@@ -8,3 +8,9 @@ How to use this code?
 4. Use any red colored or similar colored cloth to hide yourself.
     
 <b>TODO:</b> Add your custom color to config in cloak class to hide another color.
+ ## Background image 
+![Background Image](images/background.PNG)
+ ## Red color cloak
+![Red Colored Cloak](images/red_cloak.PNG)
+ ## Final output
+![Final Image](images/final_output.PNG)
